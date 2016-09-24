@@ -90,6 +90,25 @@ type DcMeta struct {
 	Data 	    []*Datacenter     `json:"data"`
 }
 
+type Class struct {
+	Name        string       `json:"name"`
+	Description string       `json:"description"`
+	Inherits 	string          `json:"inherits"`
+	Superclass 	bool        `json:"superclass"`
+	Active 		bool            `json:"active"`
+	CiData 	   	[]*Ci 	 `json:"cidata"`
+}
+type Ci struct {
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Class 	    string     `json:"class"`
+	Show 	    bool       `json:"show"`
+	Active 	    bool       `json:"active"`
+	Editmode    string     `json:"editmode"`
+}
+
+
+
 func main() {
 	fmt.Println("Starting the app...")
 	cluster, _ := gocb.Connect("couchbase://localhost")
@@ -148,12 +167,86 @@ func main() {
 	//	fmt.Println(err.Error())
 	//}
 
-	var myDcMeta DcMeta
-	_, error := bucket.Get("datacenter_meta", &myDcMeta)
+	//var myDcMeta DcMeta
+	//_, error := bucket.Get("datacenter_meta", &myDcMeta)
+	//if error != nil {
+	//	fmt.Println(error.Error())
+	//	return
+	//}
+	//jsonMyDcMeta, _ := json.Marshal(&myDcMeta)
+	//fmt.Println(string(jsonMyDcMeta))
+
+
+
+	//CiList := []*Ci{}
+	//c1 := new(Ci)
+	//c1.Class="Host"
+	//c1.Description="CPU"
+	//c1.Active=true
+	//c1.Editmode="只读"
+	//c1.Name="cpu"
+	//c1.Show=true
+	//
+	//CiList = append(CiList,c1)
+	//
+	//c2 := new(Ci)
+	//c2.Class="Host"
+	//c2.Description="内存"
+	//c2.Active=true
+	//c2.Editmode="只读"
+	//c2.Name="memory"
+	//c2.Show=true
+	//CiList = append(CiList,c2)
+	//
+	//hostClass := Class{
+	//	Name:"host",
+	//	Description:"DELL主机",
+	//	Inherits:"host",
+	//	Superclass:false,
+	//	Active:true,
+	//	CiData:CiList,
+	//}
+	//
+	//_,err := bucket.Upsert("class_host_dell", hostClass, 0)
+	//if err != nil{
+	//	fmt.Println(err.Error())
+	//}
+	//fmt.Println("创建资产成功")
+
+
+	//json 方式
+	_,err := bucket.Upsert("map_json2",map[string]string{
+		"a":"1",
+		"b":"2",
+		"c":"3",
+	}, 0)
+
+	if err != nil{
+		fmt.Println(err.Error())
+	}
+	fmt.Println("创建资产成功")
+
+	var jsonMap map[string]string
+	cas, error := bucket.Get("map_json2", &jsonMap)
 	if error != nil {
 		fmt.Println(error.Error())
 		return
 	}
-	jsonMyDcMeta, _ := json.Marshal(&myDcMeta)
-	fmt.Println(string(jsonMyDcMeta))
+
+	json1, _ := json.Marshal(&jsonMap)
+	fmt.Println(string(json1))
+
+	jsonMap["d"]="4"
+	jsonMap["e"]="5"
+	jsonMap["a"]="100"
+
+	cas,err = bucket.Replace("map_json2",&jsonMap,cas,0)
+	bucket.ExecuteN1qlQuery()
+	if error != nil {
+		fmt.Println(error.Error())
+		return
+	}
+	json2, _ := json.Marshal(&jsonMap)
+	fmt.Println(string(json2))
+
 }
