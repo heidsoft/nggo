@@ -14,8 +14,8 @@ func main() {
 	fmt.Println("控制结果3", strings.Contains("manageserver", "system"))
 	fmt.Println("控制结果3", strings.Contains("manageserver", "select"))
 
-	replaceString := strings.Replace("dcname", ".", "__", -1)
-	joinString := strings.Join("aaa", "bbb")
+	replaceString := strings.Replace("dcname.", ".", "__", -1)
+	joinString := strings.Join([]string{"aaa"}, "bbb")
 	fmt.Println("replaceString", replaceString)
 	fmt.Println("joinString", joinString)
 }

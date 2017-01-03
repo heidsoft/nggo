@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type user struct {
 	name string
@@ -8,21 +10,12 @@ type user struct {
 }
 
 func main() {
-	ci := make(chan int)
-	//cs :=make(chan string)
-	//cf :=make(chan interface{})
+	c := make(chan int)
 
-	ci <- 1
-	fmt.Sprintf("%", <-ci)
-
-	//cs <- "test"
-	//fmt.Println(<-cs)
-	//
-	//cf <- user{
-	//	name:"liubin",
-	//	age:12,
-	//}
-	//
-	//fmt.Println(<-cf)
-
+	// 使写操作在另一个goroutine中执行。
+	go func() {
+		c <- 42
+	}()
+	val := <-c
+	fmt.Println(val)
 }
