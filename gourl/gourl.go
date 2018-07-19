@@ -1,4 +1,4 @@
-package main
+package gourl
 
 import (
 	"github.com/astaxie/beego/plugins/apiauth"
