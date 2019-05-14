@@ -4,7 +4,10 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 import "time"
 
 // This is the function we'll run in a goroutine. The
@@ -28,5 +31,14 @@ func main() {
 
 	// Block until we receive a notification from the
 	// worker on the channel.
-	<-done
+	fmt.Println(<-done)
+	<-time.After(time.Second * 5)
+
+	go func() {
+		for i := 0; ; i++ {
+			fmt.Println("sleep gogogogo")
+			time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
+
+		}
+	}()
 }
